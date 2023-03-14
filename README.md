@@ -92,7 +92,7 @@ fs-migrator init
 ### Creating migration file
 ```bash
 fs-migrator create --type migration --name migration_name --collection firestore-collection-name
-fs-migrator create -t migration -n migration_name -c firestore-collection-name
+fs-migrator create -t migration -n migration_name --collection firestore-collection-name
 ```
 
 ### Applying migration
