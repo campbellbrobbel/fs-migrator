@@ -1,0 +1,74 @@
+module.exports = {
+  /**
+   * This will perform the migration to the database.
+   * @param db
+   * @param Firestore - Firestore library that contains useful classes like FieldValue, FieldPath & Timestamp
+   * @returns {Promise<void>}
+   */
+  up: async (db, Firestore) => {
+    let {{collectionName}}Collection = await db.collection('{{collectionName}}').get()
+    let documents = {{collectionName}}Collection.docs
+    await db.runTransaction(async (t) => {
+      let transactionData = []
+      /**
+       * Get a list of the documents to perform updates to and perform any 'read' transactions if necessary
+       */
+      for(let doc of documents) {
+        let docRef = doc.ref
+        console.log(`Reading document ${doc.id}`) // This line can be commented out if you don't need to perform any read operations
+        const d = await t.get(docRef); // This line can be commented out if you don't need to perform any read operations
+        transactionData.push({id: doc.id, ref: docRef, data: d.data()}) // set the data attribute to null if there is no data read
+      }
+
+      /**
+       * Perform 'write' transactions here
+       */
+      for(let {id, ref, data} of transactionData) {
+        console.log(`Updating document ${id}`)
+        /**
+         * Examples
+         * t.update(ref, {testValue: 1})
+         * t.update(ref, {testValue: data.testValue + 1})
+         * t.set(ref, {testValue}, {merge: false}) (Preferably stick to updates only)
+         */
+      }
+      return
+    });
+  },
+  /**
+   * This will undo the migration applied in the `up` function.
+   * @param db
+   * @param Firestore - Firestore library that contains useful classes like FieldValue, FieldPath & Timestamp
+   * @returns {Promise<void>}
+   */
+  down: async (db, Firestore) => {
+    let {{collectionName}}Collection = await db.collection('{{collectionName}}').get()
+    let documents = {{collectionName}}Collection.docs
+    await db.runTransaction(async (t) => {
+      let transactionData = []
+      /**
+       * Get a list of the documents to perform updates to and perform any 'read' transactions if necessary
+       */
+      for(let doc of documents) {
+        let docRef = doc.ref
+        console.debug(`Reading document ${doc.id}`) // This line can be commented out if you don't need to perform any read operations
+        const d = await t.get(docRef); // This line can be commented out if you don't need to perform any read operations
+        transactionData.push({id: doc.id, ref: docRef, data: d.data()}) // set the data attribute to null if there is no data read
+      }
+
+      /**
+       * Perform 'write' transactions here
+       */
+      for(let {id, ref, data} of transactionData) {
+        console.log(`Updating document ${id}`)
+        /**
+         * Examples
+         * t.update(ref, {testValue: 1})
+         * t.update(ref, {testValue: data.testValue + 1})
+         * t.set(ref, {testValue: testValue}, {merge: false}) (Preferably stick to updates only)
+         */
+      }
+      return
+    });
+  }
+}
